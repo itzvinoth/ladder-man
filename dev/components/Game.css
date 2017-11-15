@@ -27,6 +27,14 @@
 	bottom: 0;
   	position: absolute;
 }
+.drawLine {
+	background: #000000;
+	width: 1px;
+    height: 20px;
+    margin-left: 39px;
+    bottom: 112px;
+  	position: absolute;
+}
 .man {
 	background: #f00;
     width: 20px;
