@@ -17,6 +17,9 @@ var config = {
       include: DEV,
       loader: "babel-loader"
     }, {
+      test: /\.(png|jpg)$/,
+      loader: 'url-loader?limit=200000'
+    }, {
       test: /\.css$/,
       loader: "style-loader!css-loader"
     }]

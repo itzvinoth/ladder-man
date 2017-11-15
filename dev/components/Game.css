@@ -1,0 +1,38 @@
+.mainDiv {
+	top: 50%;
+	left: 50%;
+	width:480px;
+	height:288px;
+	margin-top: -144px; /*set to a negative number 1/2 of your height*/
+	margin-left: -240px; /*set to a negative number 1/2 of your width*/
+	border: 1px solid #ccc;
+	background-color: #f3f3f3;
+	position: fixed;
+}
+.ladderDiv {
+	border: 2px solid #DFF0D8;
+	background-color: #DFF0D8;
+	margin-left: 92%;
+}
+.gameDiv {
+	width:480px;
+	height:256px;
+	background-color: #DFF0D8;
+	position: relative;
+}
+.currBuilding {
+	height:112px;
+	width: 40px;
+	background-color: #000000;
+	bottom: 0;
+  	position: absolute;
+}
+.man {
+	background: #f00;
+    width: 20px;
+    height: 20px;
+    margin-left: 20px;
+    border-radius: 50%;
+    margin-top: 124px;
+  	position: absolute;
+}
