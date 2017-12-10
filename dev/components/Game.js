@@ -24,39 +24,45 @@ export default class Game extends React.Component {
   }*/
 
   timer() {
-    this.setState({ count: this.state.count + 1 });
+    // this.setState({ count: this.state.count + 1 });
+    const objThis  = this;
+    for (var i = 1; i <= 90; i++) {
+      (function(index) {
+        // console.log(this.state.count);
+        setTimeout(function() {
+          // let count = this.state.count + 1;
+          this.setState({ count: index });
+          // doSetTimeout(index);
+        }.bind(objThis), index * 10);
+      })(i);
+    }
     // console.log(this.state.count);
   }
 
   onMouseDown() {
     this.setState({ count: 0 });
-    this.intervalId = setInterval(this.timer.bind(this), 200);
+    // this.intervalId = setInterval(this.timer.bind(this), 200);
+    this.timer();
   }
 
   onMouseUp() {
     // this.setState({ count: 0 });
-    clearInterval(this.intervalId);
+    // clearInterval(this.intervalId);
   }
 
   render() {
     let count = this.state.count;
-    const lineStyle = {
-      background: '#000000',
-      width: '2px',
-      height: 0,
-      marginLeft: '38px',
-      marginTop: '124px',
-      bottom: '112px',
-      position: 'absolute'
-    };
-    lineStyle.height = (this.state.count*10) + 'px';
+    var xTwo = 90 * Math.sin(count * Math.PI / 180);
+    var yTwo = 90 * Math.cos(count * Math.PI / 180);
     return ( 
       
       <div className="mainDiv">
         <div className='ladderDiv'><img src={LadderImg} onMouseDown={this.onMouseDown} onMouseUp={this.onMouseUp} /></div>
         <div className='gameDiv'>
           <div className="man"></div>
-          <div style={lineStyle}></div>
+          <svg>
+            <line x1={0} y1={0} x2={xTwo} y2={yTwo} stroke="red"></line>
+          </svg>
           <div className="currBuilding">
             
           </div>
