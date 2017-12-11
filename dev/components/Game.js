@@ -14,7 +14,6 @@ export default class Game extends React.Component {
     };
     this.onMouseDown = this.onMouseDown.bind(this);
     this.onMouseUp = this.onMouseUp.bind(this);
-    // this.onMouseClick = this.onMouseClick.bind(this);
   }
 
   /*componentDidMount() {
@@ -25,13 +24,13 @@ export default class Game extends React.Component {
     this.onMouseUp();
   }*/
 
-  timer(count) {
+  ladderSlop(count) {
     const objThis  = this;
     for (var i = 1; i <= 90; i++) {
       (function(index) {
         setTimeout(function() {
-          this.setState({ count: count, angle: index, flowing: true });
-        }.bind(objThis), count * 100);
+          this.setState({ angle: index, flowing: true });
+        }.bind(objThis), index * 10);
       })(i);
     }
   }
@@ -42,20 +41,20 @@ export default class Game extends React.Component {
   }
 
   onMouseDown() {
-    this.intervalId = setInterval(this.createLadder.bind(this), 200);
+    this.intervalId = setInterval(this.createLadder.bind(this), 10);
   }
 
   onMouseUp() {
     clearInterval(this.intervalId);
-    let count = this.state.count * 5;
-    this.timer(count);
+    let counts = this.state.count;
+    this.ladderSlop(counts);
   }
 
   render() {
-    let count = (this.state.count * 5);
+    let count = this.state.count;
     let angle = this.state.angle;
-    var xTwo = 90 * Math.sin(angle * Math.PI / 180);
-    var yTwo = 90 * Math.cos(angle * Math.PI / 180);
+    var xTwo = count * Math.sin(angle * Math.PI / 180);
+    var yTwo = count * Math.cos(angle * Math.PI / 180);
     return ( 
       
       <div className="mainDiv" onMouseDown={this.onMouseDown} onMouseUp={this.onMouseUp}>

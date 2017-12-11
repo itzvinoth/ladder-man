@@ -26712,11 +26712,12 @@ var Game = function (_React$Component) {
     var _this = _possibleConstructorReturn(this, (Game.__proto__ || Object.getPrototypeOf(Game)).call(this, props));
 
     _this.state = {
-      count: 0
+      count: 0,
+      angle: 0,
+      flowing: false
     };
     _this.onMouseDown = _this.onMouseDown.bind(_this);
     _this.onMouseUp = _this.onMouseUp.bind(_this);
-    // this.timer = this.timer.bind(this);
     return _this;
   }
 
@@ -26729,59 +26730,51 @@ var Game = function (_React$Component) {
   }*/
 
   _createClass(Game, [{
-    key: 'timer',
-    value: function timer() {
-      // this.setState({ count: this.state.count + 1 });
+    key: 'ladderSlop',
+    value: function ladderSlop(count) {
       var objThis = this;
       for (var i = 1; i <= 90; i++) {
         (function (index) {
-          // console.log(this.state.count);
           setTimeout(function () {
-            // let count = this.state.count + 1;
-            this.setState({ count: index });
-            // doSetTimeout(index);
+            this.setState({ angle: index, flowing: true });
           }.bind(objThis), index * 10);
         })(i);
       }
-      // console.log(this.state.count);
+    }
+  }, {
+    key: 'createLadder',
+    value: function createLadder() {
+      var count = this.state.count + 1;
+      this.setState({ count: count, flowing: false });
     }
   }, {
     key: 'onMouseDown',
     value: function onMouseDown() {
-      this.setState({ count: 0 });
-      // this.intervalId = setInterval(this.timer.bind(this), 200);
-      this.timer();
+      this.intervalId = setInterval(this.createLadder.bind(this), 10);
     }
   }, {
     key: 'onMouseUp',
     value: function onMouseUp() {
-      // this.setState({ count: 0 });
-      // clearInterval(this.intervalId);
+      clearInterval(this.intervalId);
+      var counts = this.state.count;
+      this.ladderSlop(counts);
     }
   }, {
     key: 'render',
     value: function render() {
       var count = this.state.count;
-      var xTwo = 90 * Math.sin(count * Math.PI / 180);
-      var yTwo = 90 * Math.cos(count * Math.PI / 180);
+      var angle = this.state.angle;
+      var xTwo = count * Math.sin(angle * Math.PI / 180);
+      var yTwo = count * Math.cos(angle * Math.PI / 180);
       return _react2.default.createElement(
         'div',
-        { className: 'mainDiv' },
+        { className: 'mainDiv', onMouseDown: this.onMouseDown, onMouseUp: this.onMouseUp },
         _react2.default.createElement(
-          'div',
-          { className: 'ladderDiv' },
-          _react2.default.createElement('img', { src: _ladder2.default, onMouseDown: this.onMouseDown, onMouseUp: this.onMouseUp })
-        ),
-        _react2.default.createElement(
-          'div',
-          { className: 'gameDiv' },
-          _react2.default.createElement('div', { className: 'man' }),
-          _react2.default.createElement(
-            'svg',
-            null,
-            _react2.default.createElement('line', { x1: 0, y1: 0, x2: xTwo, y2: yTwo, stroke: 'red' })
-          ),
-          _react2.default.createElement('div', { className: 'currBuilding' })
+          'svg',
+          { width: '480', height: '350' },
+          _react2.default.createElement('rect', { x: '0', y: '270', width: '50', height: '80', fill: 'black' }),
+          _react2.default.createElement('line', { x1: 50, y1: 270, x2: 50, y2: 270 - count, stroke: 'red', visibility: this.state.flowing === false ? 'visible' : 'hidden' }),
+          _react2.default.createElement('line', { x1: 50, y1: 270, x2: 50 + xTwo, y2: 270 - yTwo, stroke: 'red', visibility: this.state.flowing === true ? 'visible' : 'hidden' })
         )
       );
     }
@@ -28393,7 +28386,7 @@ exports = module.exports = __webpack_require__(238)(undefined);
 
 
 // module
-exports.push([module.i, ".mainDiv {\r\n\ttop: 50%;\r\n\tleft: 50%;\r\n\twidth:480px;\r\n\theight:288px;\r\n\tmargin-top: -144px; /*set to a negative number 1/2 of your height*/\r\n\tmargin-left: -240px; /*set to a negative number 1/2 of your width*/\r\n\tborder: 1px solid #ccc;\r\n\tbackground-color: #f3f3f3;\r\n\tposition: fixed;\r\n}\r\n.ladderDiv {\r\n\tborder: 2px solid #DFF0D8;\r\n\tbackground-color: #DFF0D8;\r\n\tmargin-left: 92%;\r\n}\r\n.gameDiv {\r\n\twidth:480px;\r\n\theight:256px;\r\n\tbackground-color: #DFF0D8;\r\n\tposition: relative;\r\n}\r\n.currBuilding {\r\n\theight:112px;\r\n\twidth: 40px;\r\n\tbackground-color: #000000;\r\n\tbottom: 0;\r\n  \tposition: absolute;\r\n}\r\n.drawLine {\r\n\tbackground: #000000;\r\n\twidth: 1px;\r\n    height: 20px;\r\n    margin-left: 39px;\r\n    bottom: 112px;\r\n  \tposition: absolute;\r\n}\r\n.man {\r\n\tbackground: #f00;\r\n    width: 20px;\r\n    height: 20px;\r\n    margin-left: 20px;\r\n    border-radius: 50%;\r\n    margin-top: 124px;\r\n  \tposition: absolute;\r\n}", ""]);
+exports.push([module.i, ".mainDiv {\r\n\ttop: 50%;\r\n\tleft: 50%;\r\n\twidth:480px;\r\n\theight:350px;\r\n\tmargin-top: -144px; /*set to a negative number 1/2 of your height*/\r\n\tmargin-left: -240px; /*set to a negative number 1/2 of your width*/\r\n\tborder: 1px solid #ccc;\r\n\tbackground-color: #f3f3f3;\r\n\tposition: fixed;\r\n}", ""]);
 
 // exports
 
