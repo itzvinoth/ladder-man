@@ -6,13 +6,15 @@ import './Game.css';
 export default class Game extends React.Component {
 
   constructor(props) {
-  	super(props);
+    super(props);
     this.state = {
-      count: 0
+      count: 0,
+      angle: 0,
+      flowing: false
     };
-  	this.onMouseDown = this.onMouseDown.bind(this);
+    this.onMouseDown = this.onMouseDown.bind(this);
     this.onMouseUp = this.onMouseUp.bind(this);
-    // this.timer = this.timer.bind(this);
+    // this.onMouseClick = this.onMouseClick.bind(this);
   }
 
   /*componentDidMount() {
@@ -23,50 +25,45 @@ export default class Game extends React.Component {
     this.onMouseUp();
   }*/
 
-  timer() {
-    // this.setState({ count: this.state.count + 1 });
+  timer(count) {
     const objThis  = this;
     for (var i = 1; i <= 90; i++) {
       (function(index) {
-        // console.log(this.state.count);
         setTimeout(function() {
-          // let count = this.state.count + 1;
-          this.setState({ count: index });
-          // doSetTimeout(index);
-        }.bind(objThis), index * 10);
+          this.setState({ count: count, angle: index, flowing: true });
+        }.bind(objThis), count * 100);
       })(i);
     }
-    // console.log(this.state.count);
+  }
+
+  createLadder() {
+    let count = this.state.count + 1;
+    this.setState({ count: count, flowing: false });
   }
 
   onMouseDown() {
-    this.setState({ count: 0 });
-    // this.intervalId = setInterval(this.timer.bind(this), 200);
-    this.timer();
+    this.intervalId = setInterval(this.createLadder.bind(this), 200);
   }
 
   onMouseUp() {
-    // this.setState({ count: 0 });
-    // clearInterval(this.intervalId);
+    clearInterval(this.intervalId);
+    let count = this.state.count * 5;
+    this.timer(count);
   }
 
   render() {
-    let count = this.state.count;
-    var xTwo = 90 * Math.sin(count * Math.PI / 180);
-    var yTwo = 90 * Math.cos(count * Math.PI / 180);
+    let count = (this.state.count * 5);
+    let angle = this.state.angle;
+    var xTwo = 90 * Math.sin(angle * Math.PI / 180);
+    var yTwo = 90 * Math.cos(angle * Math.PI / 180);
     return ( 
       
-      <div className="mainDiv">
-        <div className='ladderDiv'><img src={LadderImg} onMouseDown={this.onMouseDown} onMouseUp={this.onMouseUp} /></div>
-        <div className='gameDiv'>
-          <div className="man"></div>
-          <svg>
-            <line x1={0} y1={0} x2={xTwo} y2={yTwo} stroke="red"></line>
+      <div className="mainDiv" onMouseDown={this.onMouseDown} onMouseUp={this.onMouseUp}>
+        <svg width="480" height="350"> 
+            <rect x="0" y="270" width="50" height="80" fill="black"/>
+            <line x1={50} y1={270} x2={50} y2={270-count} stroke="red" visibility={(this.state.flowing === false) ? 'visible' : 'hidden'}/>
+            <line x1={50} y1={270} x2={50+xTwo} y2={270-yTwo} stroke="red" visibility={(this.state.flowing === true) ? 'visible' : 'hidden'}/>
           </svg>
-          <div className="currBuilding">
-            
-          </div>
-        </div>
     </div>
     )
   }
