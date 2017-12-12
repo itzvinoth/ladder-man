@@ -26714,6 +26714,10 @@ var Game = function (_React$Component) {
     _this.state = {
       count: 0,
       angle: 0,
+      xAxisBuildingOne: 0,
+      xAxisBuildingTwo: 80,
+      widthBuildingOne: 50,
+      widthBuildingTwo: 30,
       flowing: false
     };
     _this.onMouseDown = _this.onMouseDown.bind(_this);
@@ -26721,17 +26725,19 @@ var Game = function (_React$Component) {
     return _this;
   }
 
-  /*componentDidMount() {
-    this.onMouseDown();
-  }*/
-
-  /*componentWillUnmount(){
-    this.onMouseUp();
-  }*/
-
   _createClass(Game, [{
-    key: 'ladderSlop',
-    value: function ladderSlop(count) {
+    key: 'componentDidMount',
+    value: function componentDidMount() {
+      this.constructBuilding();
+    }
+
+    /*componentWillUnmount(){
+      this.onMouseUp();
+    }*/
+
+  }, {
+    key: 'ladderFall',
+    value: function ladderFall(count) {
       var objThis = this;
       for (var i = 1; i <= 90; i++) {
         (function (index) {
@@ -26748,6 +26754,18 @@ var Game = function (_React$Component) {
       this.setState({ count: count, flowing: false });
     }
   }, {
+    key: 'constructBuilding',
+    value: function constructBuilding() {
+      setInterval(function () {
+        this.setState({
+          xAxisBuildingOne: 0,
+          xAxisBuildingTwo: Math.floor(Math.random() * (380 - 80)) + 80,
+          widthBuildingOne: Math.floor(Math.random() * 50) + 20,
+          widthBuildingTwo: Math.floor(Math.random() * 70) + 20
+        });
+      }.bind(this), 3000);
+    }
+  }, {
     key: 'onMouseDown',
     value: function onMouseDown() {
       this.intervalId = setInterval(this.createLadder.bind(this), 10);
@@ -26757,24 +26775,41 @@ var Game = function (_React$Component) {
     value: function onMouseUp() {
       clearInterval(this.intervalId);
       var counts = this.state.count;
-      this.ladderSlop(counts);
+      this.ladderFall(counts);
     }
+
+    /*render() {
+      let count = this.state.count;
+      let angle = this.state.angle;
+      let xTwo = count * Math.sin(angle * Math.PI / 180);
+      let yTwo = count * Math.cos(angle * Math.PI / 180);
+      return ( 
+        
+        <div className="mainDiv" onMouseDown={this.onMouseDown} onMouseUp={this.onMouseUp}>
+          <svg width="480" height="350"> 
+              <rect x="0" y="270" width="50" height="80" fill="black"/>
+              <line x1={50} y1={270} x2={50} y2={270-count} stroke="red" visibility={(this.state.flowing === false) ? 'visible' : 'hidden'}/>
+              <line x1={50} y1={270} x2={50+xTwo} y2={270-yTwo} stroke="red" visibility={(this.state.flowing === true) ? 'visible' : 'hidden'}/>
+            </svg>
+      </div>
+      )
+    }*/
+
   }, {
     key: 'render',
     value: function render() {
-      var count = this.state.count;
-      var angle = this.state.angle;
-      var xTwo = count * Math.sin(angle * Math.PI / 180);
-      var yTwo = count * Math.cos(angle * Math.PI / 180);
+      var xAxisBuildingOne = this.state.xAxisBuildingOne;
+      var xAxisBuildingTwo = this.state.xAxisBuildingTwo;
+      var widthBuildingOne = this.state.widthBuildingOne;
+      var widthBuildingTwo = this.state.widthBuildingTwo;
       return _react2.default.createElement(
         'div',
         { className: 'mainDiv', onMouseDown: this.onMouseDown, onMouseUp: this.onMouseUp },
         _react2.default.createElement(
           'svg',
           { width: '480', height: '350' },
-          _react2.default.createElement('rect', { x: '0', y: '270', width: '50', height: '80', fill: 'black' }),
-          _react2.default.createElement('line', { x1: 50, y1: 270, x2: 50, y2: 270 - count, stroke: 'red', visibility: this.state.flowing === false ? 'visible' : 'hidden' }),
-          _react2.default.createElement('line', { x1: 50, y1: 270, x2: 50 + xTwo, y2: 270 - yTwo, stroke: 'red', visibility: this.state.flowing === true ? 'visible' : 'hidden' })
+          _react2.default.createElement('rect', { x: xAxisBuildingOne, y: '270', width: widthBuildingOne, height: '80', fill: 'black' }),
+          _react2.default.createElement('rect', { x: xAxisBuildingTwo, y: '270', width: widthBuildingTwo, height: '80', fill: 'black' })
         )
       );
     }
