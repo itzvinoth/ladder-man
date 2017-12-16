@@ -1,6 +1,5 @@
 import React from 'react';
 import _ from 'underscore';
-import LadderImg from './images/ladder.png';
 import './Game.css';
 
 export default class Game extends React.Component {
@@ -18,6 +17,7 @@ export default class Game extends React.Component {
     };
     this.onMouseDown = this.onMouseDown.bind(this);
     this.onMouseUp = this.onMouseUp.bind(this);
+    this.onMouseClick = this.onMouseClick.bind(this);
   }
 
   componentDidMount() {
@@ -27,6 +27,44 @@ export default class Game extends React.Component {
   /*componentWillUnmount(){
     this.onMouseUp();
   }*/
+
+  onMouseClick() {
+    let objThis  = this;
+    var count = 0, nextCount= 0;
+    //new building created and moving in to the location of building two...
+    for (var max = 480, min = Math.floor(Math.random() * 300) + 80; max >= min; max--) {
+      (function(index) {
+        count += 1;
+        setTimeout(function() {
+          this.setState({ 
+            xAxisBuildingTwo: index
+          });
+        }.bind(objThis), count * 5);
+      })(max);
+    }
+    //After timeout building two moving to the location of buuilding one...
+    setTimeout(function() {
+      let insideObj = this;
+      // console.log(this.state.xAxisBuildingTwo);
+      for (var i = this.state.xAxisBuildingTwo, min = 0; i >= min; i--) {
+        (function(index) {
+          nextCount += 1;
+          setTimeout(function() {
+            this.setState({ 
+              xAxisBuildingOne: index
+            });
+          }.bind(insideObj), nextCount * 5);
+        })(i);
+      }
+    }.bind(objThis), 50);
+    
+    this.setState({ 
+      // xAxisBuildingOne: 0,
+      // xAxisBuildingTwo: Math.floor(Math.random() * 300) + 80,
+      widthBuildingOne: Math.floor(Math.random() * 50) + 20,
+      widthBuildingTwo: Math.floor(Math.random() * 70) + 20, 
+    });
+  }
 
   ladderFall(count) {
     const objThis  = this;
@@ -45,14 +83,14 @@ export default class Game extends React.Component {
   }
 
   constructBuilding() {
-    setInterval(function() {
+    /*setInterval(function() {
       this.setState({ 
         xAxisBuildingOne: 0,
         xAxisBuildingTwo: Math.floor(Math.random() * (380 - 80)) + 80,
         widthBuildingOne: Math.floor(Math.random() * 50) + 20,
         widthBuildingTwo: Math.floor(Math.random() * 70) + 20, 
       })
-    }.bind(this), 3000);
+    }.bind(this), 3000);*/
   }
 
   onMouseDown() {
@@ -87,7 +125,7 @@ export default class Game extends React.Component {
     let widthBuildingOne = this.state.widthBuildingOne;
     let widthBuildingTwo = this.state.widthBuildingTwo;
     return ( 
-      <div className="mainDiv" onMouseDown={this.onMouseDown} onMouseUp={this.onMouseUp}>
+      <div className="mainDiv" onMouseDown={this.onMouseDown} onMouseUp={this.onMouseUp} onClick={this.onMouseClick}>
         <svg width="480" height="350"> 
             <rect x={xAxisBuildingOne} y="270" width={widthBuildingOne} height="80" fill="black"/>
             <rect x={xAxisBuildingTwo} y="270" width={widthBuildingTwo} height="80" fill="black"/>

@@ -26689,11 +26689,7 @@ var _underscore = __webpack_require__(234);
 
 var _underscore2 = _interopRequireDefault(_underscore);
 
-var _ladder = __webpack_require__(235);
-
-var _ladder2 = _interopRequireDefault(_ladder);
-
-__webpack_require__(236);
+__webpack_require__(235);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -26722,6 +26718,7 @@ var Game = function (_React$Component) {
     };
     _this.onMouseDown = _this.onMouseDown.bind(_this);
     _this.onMouseUp = _this.onMouseUp.bind(_this);
+    _this.onMouseClick = _this.onMouseClick.bind(_this);
     return _this;
   }
 
@@ -26735,6 +26732,46 @@ var Game = function (_React$Component) {
       this.onMouseUp();
     }*/
 
+  }, {
+    key: 'onMouseClick',
+    value: function onMouseClick() {
+      var objThis = this;
+      var count = 0,
+          nextCount = 0;
+      //new building created and moving in to the location of building two...
+      for (var max = 480, min = Math.floor(Math.random() * 300) + 80; max >= min; max--) {
+        (function (index) {
+          count += 1;
+          setTimeout(function () {
+            this.setState({
+              xAxisBuildingTwo: index
+            });
+          }.bind(objThis), count * 5);
+        })(max);
+      }
+      //After timeout building two moving to the location of buuilding one...
+      setTimeout(function () {
+        var insideObj = this;
+        // console.log(this.state.xAxisBuildingTwo);
+        for (var i = this.state.xAxisBuildingTwo, min = 0; i >= min; i--) {
+          (function (index) {
+            nextCount += 1;
+            setTimeout(function () {
+              this.setState({
+                xAxisBuildingOne: index
+              });
+            }.bind(insideObj), nextCount * 5);
+          })(i);
+        }
+      }.bind(objThis), 50);
+
+      this.setState({
+        // xAxisBuildingOne: 0,
+        // xAxisBuildingTwo: Math.floor(Math.random() * 300) + 80,
+        widthBuildingOne: Math.floor(Math.random() * 50) + 20,
+        widthBuildingTwo: Math.floor(Math.random() * 70) + 20
+      });
+    }
   }, {
     key: 'ladderFall',
     value: function ladderFall(count) {
@@ -26756,14 +26793,14 @@ var Game = function (_React$Component) {
   }, {
     key: 'constructBuilding',
     value: function constructBuilding() {
-      setInterval(function () {
-        this.setState({
+      /*setInterval(function() {
+        this.setState({ 
           xAxisBuildingOne: 0,
           xAxisBuildingTwo: Math.floor(Math.random() * (380 - 80)) + 80,
           widthBuildingOne: Math.floor(Math.random() * 50) + 20,
-          widthBuildingTwo: Math.floor(Math.random() * 70) + 20
-        });
-      }.bind(this), 3000);
+          widthBuildingTwo: Math.floor(Math.random() * 70) + 20, 
+        })
+      }.bind(this), 3000);*/
     }
   }, {
     key: 'onMouseDown',
@@ -26804,7 +26841,7 @@ var Game = function (_React$Component) {
       var widthBuildingTwo = this.state.widthBuildingTwo;
       return _react2.default.createElement(
         'div',
-        { className: 'mainDiv', onMouseDown: this.onMouseDown, onMouseUp: this.onMouseUp },
+        { className: 'mainDiv', onMouseDown: this.onMouseDown, onMouseUp: this.onMouseUp, onClick: this.onMouseClick },
         _react2.default.createElement(
           'svg',
           { width: '480', height: '350' },
@@ -28377,18 +28414,12 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;//     Underscor
 
 /***/ }),
 /* 235 */
-/***/ (function(module, exports) {
-
-module.exports = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAAA3NCSVQICAjb4U/gAAAACXBIWXMAAADhAAAA4QFwGBwuAAAAGXRFWHRTb2Z0d2FyZQB3d3cuaW5rc2NhcGUub3Jnm+48GgAAANtQTFRF////AL+AAL+fW4CAd4iIEM+fDMKeC7+fYXtyDdKsDM6qEcuoEc2sCsKeCcOfDs+qX3VxWnp0VYB4CsSfT4N6CcOeD9CrCcOfRZKECcWgb4eCDtKrJKqPD9GsC8Wgb4eCGbeYDtGsG8KiDMijZn54C8mjD9KsFcunDtKrDtKsEcOgDtGrDtKrDMumDs+pEc6qEs6pDsqmD82oVGxmIrKVJaiNJa6TK6CIL6CKOIx7OI18O5B+RX1xRoB0THVsTnVrUHJqUm9oVGxmXYZ9XoR7XoV9YIN7Y4B5Zn54WPrTRAAAADR0Uk5TAAQIDg8QFRgdKCosLjJVWnyAhIWIjIyNk7S3usDBwsjZ2tvd3+Hh7O3t7e7u8vT29vj6/pQUeiUAAAEGSURBVDiNfc7bVsIwEIXhLS1SFTUgKhS0iFUUj1COcpKC0Pd/Ilu0s1aSaXL7f7NXAO7Zrm+xIe1eFDjmPmiZe1h5qBu7QCFTxH3UziFTJPel27tMYXs/S4EcCcfS7icfRZBoBb7+v8uXk1RUBpEr9/VcACREGHm2fD/rnSMRx4lo6z0UZ+978RyL0kjtm2m8/y+ejpj9RfcKqbj+/Gb2T99IiK+t0nfjeJ8Es7/q3IBEb87sH96TELO12odlgASzHzYf8yS6U2b/oEZCLDZShxv1qwAJdR/wg8ZrkURnrHZYDi5IiNVO7fuXirK2L4vmMKv/Cf1/sqgaO9Dom7sTmDss3+X7L8cdLupcY5P7AAAAAElFTkSuQmCC"
-
-/***/ }),
-/* 236 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(237);
+var content = __webpack_require__(236);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // Prepare cssTransformation
 var transform;
@@ -28396,7 +28427,7 @@ var transform;
 var options = {"hmr":true}
 options.transform = transform
 // add the styles to the DOM
-var update = __webpack_require__(239)(content, options);
+var update = __webpack_require__(238)(content, options);
 if(content.locals) module.exports = content.locals;
 // Hot Module Replacement
 if(false) {
@@ -28413,10 +28444,10 @@ if(false) {
 }
 
 /***/ }),
-/* 237 */
+/* 236 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(238)(undefined);
+exports = module.exports = __webpack_require__(237)(undefined);
 // imports
 
 
@@ -28427,7 +28458,7 @@ exports.push([module.i, ".mainDiv {\r\n\ttop: 50%;\r\n\tleft: 50%;\r\n\twidth:48
 
 
 /***/ }),
-/* 238 */
+/* 237 */
 /***/ (function(module, exports) {
 
 /*
@@ -28509,7 +28540,7 @@ function toComment(sourceMap) {
 
 
 /***/ }),
-/* 239 */
+/* 238 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*
@@ -28565,7 +28596,7 @@ var singleton = null;
 var	singletonCounter = 0;
 var	stylesInsertedAtTop = [];
 
-var	fixUrls = __webpack_require__(240);
+var	fixUrls = __webpack_require__(239);
 
 module.exports = function(list, options) {
 	if (typeof DEBUG !== "undefined" && DEBUG) {
@@ -28881,7 +28912,7 @@ function updateLink (link, options, obj) {
 
 
 /***/ }),
-/* 240 */
+/* 239 */
 /***/ (function(module, exports) {
 
 
