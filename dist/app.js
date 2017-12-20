@@ -26714,6 +26714,8 @@ var Game = function (_React$Component) {
       xAxisBuildingTwo: 80,
       widthBuildingOne: 50,
       widthBuildingTwo: 30,
+      xAxisBuildingThree: 480,
+      widthBuildingThree: 50,
       flowing: false
     };
     _this.onMouseDown = _this.onMouseDown.bind(_this);
@@ -26737,9 +26739,28 @@ var Game = function (_React$Component) {
     value: function onMouseClick() {
       var objThis = this;
       var count = 0,
-          nextCount = 0;
-      //new building created and moving in to the location of building two...
-      for (var max = 480, min = Math.floor(Math.random() * 300) + 80; max >= min; max--) {
+          nextCount = 0,
+          firstCount = 0;
+      var buildingTwoState = Math.floor(Math.random() * 300) + 80;
+      this.setState(function (prevState) {
+
+        var buildingTwoWidth = prevState.widthBuildingTwo;
+        var buildingOneWidth = prevState.widthBuildingOne * -1;
+        //building-one moving out of focus...
+        for (var max = 0, min = buildingOneWidth; max >= min; max--) {
+          (function (index) {
+            firstCount += 1;
+            setTimeout(function () {
+              this.setState({
+                xAxisBuildingOne: index
+              });
+            }.bind(objThis), firstCount * 10);
+          })(max);
+        }
+      });
+
+      //new building created and moving in to the location of building-two...
+      for (var max = 480, min = buildingTwoState; max >= min; max--) {
         (function (index) {
           count += 1;
           setTimeout(function () {
@@ -26749,27 +26770,40 @@ var Game = function (_React$Component) {
           }.bind(objThis), count * 5);
         })(max);
       }
-      //After timeout building two moving to the location of buuilding one...
-      setTimeout(function () {
-        var insideObj = this;
-        // console.log(this.state.xAxisBuildingTwo);
-        for (var i = this.state.xAxisBuildingTwo, min = 0; i >= min; i--) {
+      //After timeout building-two moving in to the location of building-one...
+      // setTimeout(function() {
+      // console.log(this.state.widthBuildingTwo);
+      /*for (var i = buildingTwoState, min = 0; i >= min; i--) {
+        (function(index) {
+          nextCount += 1;
+          setTimeout(function() {
+            this.setState({ 
+              xAxisBuildingOne: index
+            });
+          }.bind(objThis), nextCount * 5);
+        })(i);
+      }*/
+      // }.bind(objThis), 0);
+
+      this.setState(function (prevState) {
+        var buildingTwoState = prevState.xAxisBuildingTwo;
+        for (var max = buildingTwoState, min = 0; max >= min; max--) {
           (function (index) {
             nextCount += 1;
             setTimeout(function () {
               this.setState({
                 xAxisBuildingOne: index
               });
-            }.bind(insideObj), nextCount * 5);
-          })(i);
+            }.bind(objThis), nextCount * 10);
+          })(max);
         }
-      }.bind(objThis), 50);
+      });
 
-      this.setState({
-        // xAxisBuildingOne: 0,
-        // xAxisBuildingTwo: Math.floor(Math.random() * 300) + 80,
-        widthBuildingOne: Math.floor(Math.random() * 50) + 20,
-        widthBuildingTwo: Math.floor(Math.random() * 70) + 20
+      this.setState(function (prevState) {
+        return {
+          widthBuildingOne: prevState.widthBuildingTwo,
+          widthBuildingTwo: Math.floor(Math.random() * 70) + 20
+        };
       });
     }
   }, {
@@ -26839,6 +26873,9 @@ var Game = function (_React$Component) {
       var xAxisBuildingTwo = this.state.xAxisBuildingTwo;
       var widthBuildingOne = this.state.widthBuildingOne;
       var widthBuildingTwo = this.state.widthBuildingTwo;
+      var xAxisBuildingThree = this.state.xAxisBuildingThree;
+      var widthBuildingThree = this.state.widthBuildingThree;
+
       return _react2.default.createElement(
         'div',
         { className: 'mainDiv', onMouseDown: this.onMouseDown, onMouseUp: this.onMouseUp, onClick: this.onMouseClick },
@@ -26846,7 +26883,8 @@ var Game = function (_React$Component) {
           'svg',
           { width: '480', height: '350' },
           _react2.default.createElement('rect', { x: xAxisBuildingOne, y: '270', width: widthBuildingOne, height: '80', fill: 'black' }),
-          _react2.default.createElement('rect', { x: xAxisBuildingTwo, y: '270', width: widthBuildingTwo, height: '80', fill: 'black' })
+          _react2.default.createElement('rect', { x: xAxisBuildingTwo, y: '270', width: widthBuildingTwo, height: '80', fill: 'black' }),
+          _react2.default.createElement('rect', { x: xAxisBuildingThree, y: '270', width: widthBuildingThree, height: '80', fill: 'black' })
         )
       );
     }

@@ -13,6 +13,8 @@ export default class Game extends React.Component {
       xAxisBuildingTwo: 80,
       widthBuildingOne: 50,
       widthBuildingTwo: 30,
+      xAxisBuildingThree: 480,
+      widthBuildingThree: 50,
       flowing: false
     };
     this.onMouseDown = this.onMouseDown.bind(this);
@@ -30,9 +32,27 @@ export default class Game extends React.Component {
 
   onMouseClick() {
     let objThis  = this;
-    var count = 0, nextCount= 0;
-    //new building created and moving in to the location of building two...
-    for (var max = 480, min = Math.floor(Math.random() * 300) + 80; max >= min; max--) {
+    var count = 0, nextCount= 0, firstCount = 0;
+    let buildingTwoState = Math.floor(Math.random() * 300) + 80;
+    this.setState(function(prevState) {
+      
+      let buildingTwoWidth = prevState.widthBuildingTwo;
+      let buildingOneWidth = prevState.widthBuildingOne * -1;
+      //building-one moving out of focus...
+      for (var max = 0, min = buildingOneWidth; max >= min; max--) {
+        (function(index) {
+          firstCount += 1;
+          setTimeout(function() {
+            this.setState({
+              xAxisBuildingOne: index
+            });
+          }.bind(objThis), firstCount * 10);
+        })(max);
+      }
+    });
+    
+    //new building created and moving in to the location of building-two...
+    for (var max = 480, min = buildingTwoState; max >= min; max--) {
       (function(index) {
         count += 1;
         setTimeout(function() {
@@ -42,27 +62,40 @@ export default class Game extends React.Component {
         }.bind(objThis), count * 5);
       })(max);
     }
-    //After timeout building two moving to the location of buuilding one...
-    setTimeout(function() {
-      let insideObj = this;
-      // console.log(this.state.xAxisBuildingTwo);
-      for (var i = this.state.xAxisBuildingTwo, min = 0; i >= min; i--) {
+    //After timeout building-two moving in to the location of building-one...
+    // setTimeout(function() {
+      // console.log(this.state.widthBuildingTwo);
+      /*for (var i = buildingTwoState, min = 0; i >= min; i--) {
         (function(index) {
           nextCount += 1;
           setTimeout(function() {
             this.setState({ 
               xAxisBuildingOne: index
             });
-          }.bind(insideObj), nextCount * 5);
+          }.bind(objThis), nextCount * 5);
         })(i);
+      }*/
+    // }.bind(objThis), 0);
+
+    this.setState(function(prevState) {
+      let buildingTwoState = prevState.xAxisBuildingTwo;
+      for (var max = buildingTwoState, min = 0; max >= min; max--) {
+        (function(index) {
+          nextCount += 1;
+          setTimeout(function() {
+            this.setState({
+              xAxisBuildingOne: index
+            });
+          }.bind(objThis), nextCount * 10);
+        })(max);
       }
-    }.bind(objThis), 50);
+    });
     
-    this.setState({ 
-      // xAxisBuildingOne: 0,
-      // xAxisBuildingTwo: Math.floor(Math.random() * 300) + 80,
-      widthBuildingOne: Math.floor(Math.random() * 50) + 20,
-      widthBuildingTwo: Math.floor(Math.random() * 70) + 20, 
+    this.setState(function(prevState) {
+      return {
+        widthBuildingOne: prevState.widthBuildingTwo,
+        widthBuildingTwo: Math.floor(Math.random() * 70) + 20, 
+      }
     });
   }
 
@@ -124,11 +157,15 @@ export default class Game extends React.Component {
     let xAxisBuildingTwo = this.state.xAxisBuildingTwo;
     let widthBuildingOne = this.state.widthBuildingOne;
     let widthBuildingTwo = this.state.widthBuildingTwo;
+    let xAxisBuildingThree = this.state.xAxisBuildingThree;
+    let widthBuildingThree = this.state.widthBuildingThree;
+
     return ( 
       <div className="mainDiv" onMouseDown={this.onMouseDown} onMouseUp={this.onMouseUp} onClick={this.onMouseClick}>
         <svg width="480" height="350"> 
             <rect x={xAxisBuildingOne} y="270" width={widthBuildingOne} height="80" fill="black"/>
             <rect x={xAxisBuildingTwo} y="270" width={widthBuildingTwo} height="80" fill="black"/>
+            <rect x={xAxisBuildingThree} y="270" width={widthBuildingThree} height="80" fill="black"/>
           </svg>
       </div>
     )
