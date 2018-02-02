@@ -21,6 +21,8 @@ export default class Game extends React.Component {
       angle: 0,
       flowing: false
     };
+    this.onMouseDown = this.onMouseDown.bind(this);
+    this.onMouseUp = this.onMouseUp.bind(this);
     this.onMouseClick = this.onMouseClick.bind(this);
   }
 
@@ -88,6 +90,31 @@ export default class Game extends React.Component {
     }.bind(this)).catch(function() {
       console.log("catch");
     });
+  }
+  ladderFall(count) {
+    const objThis  = this;
+    for (var i = 1; i <= 90; i++) {
+      (function(index) {
+        setTimeout(function() {
+          this.setState({ angle: index, flowing: true });
+        }.bind(objThis), index * 10);
+      })(i);
+    }
+  }
+
+  createLadder() {
+    let count = this.state.count + 1;
+    this.setState({ count: count, flowing: false });
+  }
+  
+  onMouseDown() {
+    this.intervalId = setInterval(this.createLadder.bind(this), 10);
+  }
+
+  onMouseUp() {
+    clearInterval(this.intervalId);
+    let counts = this.state.count;
+    this.ladderFall(counts);
   }
 
   render() {
