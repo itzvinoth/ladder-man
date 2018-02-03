@@ -24,7 +24,23 @@ var config = {
       loader: "style-loader!css-loader"
     }]
   },
-  watch: true
+  watch: true,
+  plugins: [
+    new webpack.DefinePlugin({
+      'process.env': {
+        NODE_ENV: '"production"'
+      }
+    }),
+    new webpack.optimize.UglifyJsPlugin({
+      compress: {
+        warnings: false,
+        screw_ie8: true,
+        drop_console: false,
+        drop_debugger: true
+      }
+    }),
+    new webpack.optimize.OccurrenceOrderPlugin(),
+  ]
 };
 
 module.exports = config;

@@ -1,5 +1,4 @@
 import React from 'react';
-import _ from 'underscore';
 import './Game.css';
 
 export default class Game extends React.Component {
@@ -23,10 +22,10 @@ export default class Game extends React.Component {
     };
     this.onMouseDown = this.onMouseDown.bind(this);
     this.onMouseUp = this.onMouseUp.bind(this);
-    this.onMouseClick = this.onMouseClick.bind(this);
+    // this.onMouseClick = this.onMouseClick.bind(this);
   }
 
-  onMouseClick() {
+  buildingHorizontalMove() {
     let objThis  = this;
     let countOne = 0, countTwo= 0, countThree = 0;
     let buildingThreeState = Math.floor(Math.random() * 300) + 80;
@@ -97,6 +96,9 @@ export default class Game extends React.Component {
       (function(index) {
         setTimeout(function() {
           this.setState({ angle: index, flowing: true });
+          if (index == 90) {
+            this.buildingHorizontalMove();
+          }
         }.bind(objThis), index * 10);
       })(i);
     }
@@ -118,10 +120,17 @@ export default class Game extends React.Component {
   }
 
   render() {
-    // console.log(this.state.building);
+    var xLadderPosition = this.state.building[0].width;
+    // var xLadderPositionOnMove = this.state.building[1].xAxis;
+    let count = this.state.count;
+    let angle = this.state.angle;
+    var xTwo = count * Math.sin(angle * Math.PI / 180);
+    var yTwo = count * Math.cos(angle * Math.PI / 180);
     return ( 
-      <div className="mainDiv" onMouseDown={this.onMouseDown} onMouseUp={this.onMouseUp} onClick={this.onMouseClick}>
+      <div className="mainDiv" onMouseDown={this.onMouseDown} onMouseUp={this.onMouseUp}>
         <svg width="480" height="350"> 
+          <line x1={xLadderPosition} y1={270} x2={xLadderPosition} y2={270-count} stroke="red" visibility={(this.state.flowing === false) ? 'visible' : 'hidden'}/>
+          <line x1={xLadderPosition} y1={270} x2={xLadderPosition+xTwo} y2={270-yTwo} stroke="red" visibility={(this.state.flowing === true) ? 'visible' : 'hidden'}/>
           {this.state.building.map(function(item, index) {
             return (<rect key={index} x={item.xAxis} y="270" width={item.width} height="80" fill="black"/>)
           })}
