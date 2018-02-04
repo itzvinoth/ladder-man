@@ -18,12 +18,24 @@ export default class Game extends React.Component {
       }],
       count: 0,
       angle: 0,
-      flowing: false
+      flowing: false,
+      horizontalMove: false
     };
     this.onMouseDown = this.onMouseDown.bind(this);
     this.onMouseUp = this.onMouseUp.bind(this);
     // this.onMouseClick = this.onMouseClick.bind(this);
   }
+
+  componentWillUpdate(nextProps, nextState) {
+    // console.log(JSON.stringify(nextState));
+    if (nextState.flowing === true || nextState.angle === true) {
+      
+    }
+  }
+
+  /*componentWillUnmount() {
+    window.removeEventListener("mousedown", this.onMouseDown);
+  }*/
 
   buildingHorizontalMove() {
     let objThis  = this;
@@ -84,20 +96,25 @@ export default class Game extends React.Component {
     promise.then(function(value) { 
       let newBuilding = {xAxis: value.newBuildingxAxis, width: value.newBuildingWidth}
       this.setState({
+        horizontalMove: false,
+        count: 0,
         building: [...this.state.building.slice(1), newBuilding]
       });
     }.bind(this)).catch(function() {
       console.log("catch");
     });
   }
+
   ladderFall(count) {
     const objThis  = this;
-    for (var i = 1; i <= 90; i++) {
+    for (var i = 1; i <= 91; i++) {
       (function(index) {
         setTimeout(function() {
-          this.setState({ angle: index, flowing: true });
-          if (index == 90) {
+          if (index == 91) {
             this.buildingHorizontalMove();
+            this.setState({ horizontalMove: true });
+          } else {
+            this.setState({ angle: index, flowing: true });
           }
         }.bind(objThis), index * 10);
       })(i);
@@ -110,6 +127,7 @@ export default class Game extends React.Component {
   }
   
   onMouseDown() {
+    this.setState({ count: 0, flowing: false, horizontalMove: false });
     this.intervalId = setInterval(this.createLadder.bind(this), 10);
   }
 
@@ -120,17 +138,19 @@ export default class Game extends React.Component {
   }
 
   render() {
-    var xLadderPosition = this.state.building[0].width;
-    // var xLadderPositionOnMove = this.state.building[1].xAxis;
+    let xLadderPosition = this.state.building[0].width;
+    let xLadderPositionOnMove = this.state.building[1].xAxis;
+    // console.log(xLadderPositionOnMove - xLadderPosition);
     let count = this.state.count;
     let angle = this.state.angle;
-    var xTwo = count * Math.sin(angle * Math.PI / 180);
-    var yTwo = count * Math.cos(angle * Math.PI / 180);
+    let xTwo = count * Math.sin(angle * Math.PI / 180);
+    let yTwo = count * Math.cos(angle * Math.PI / 180);
     return ( 
       <div className="mainDiv" onMouseDown={this.onMouseDown} onMouseUp={this.onMouseUp}>
         <svg width="480" height="350"> 
-          <line x1={xLadderPosition} y1={270} x2={xLadderPosition} y2={270-count} stroke="red" visibility={(this.state.flowing === false) ? 'visible' : 'hidden'}/>
-          <line x1={xLadderPosition} y1={270} x2={xLadderPosition+xTwo} y2={270-yTwo} stroke="red" visibility={(this.state.flowing === true) ? 'visible' : 'hidden'}/>
+          <line x1={xLadderPosition} y1={270} x2={xLadderPosition} y2={270-count} stroke="red" visibility={(this.state.flowing === false && this.state.horizontalMove === false) ? 'visible' : 'hidden'}/>
+          <line x1={xLadderPosition} y1={270} x2={xLadderPosition+xTwo} y2={270-yTwo} stroke="red" visibility={(this.state.flowing === true && this.state.horizontalMove === false) ? 'visible' : 'hidden'}/>
+          <line x1={xLadderPositionOnMove -xLadderPosition} y1={270} x2={xLadderPositionOnMove-xLadderPosition+xTwo} y2={270-yTwo} stroke="red" visibility={(this.state.flowing === true && this.state.horizontalMove === true) ? 'visible' : 'hidden'}/>
           {this.state.building.map(function(item, index) {
             return (<rect key={index} x={item.xAxis} y="270" width={item.width} height="80" fill="black"/>)
           })}
