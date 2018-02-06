@@ -1,5 +1,6 @@
 import React from 'react';
 import './Game.css';
+import _ from 'underscore';
 
 export default class Game extends React.Component {
 
@@ -23,19 +24,17 @@ export default class Game extends React.Component {
     };
     this.onMouseDown = this.onMouseDown.bind(this);
     this.onMouseUp = this.onMouseUp.bind(this);
-    // this.onMouseClick = this.onMouseClick.bind(this);
+  }
+  
+  componentAddEventListener() {
+    let el =document.querySelector(".mainDiv");
+    el.addEventListener("mousedown", this.onMouseDown);
+    el.addEventListener("mouseup", this.onMouseUp);
   }
 
-  componentWillUpdate(nextProps, nextState) {
-    // console.log(JSON.stringify(nextState));
-    if (nextState.flowing === true || nextState.angle === true) {
-      
-    }
+  componentDidMount() {
+    this.componentAddEventListener();
   }
-
-  /*componentWillUnmount() {
-    window.removeEventListener("mousedown", this.onMouseDown);
-  }*/
 
   buildingHorizontalMove() {
     let objThis  = this;
@@ -100,25 +99,14 @@ export default class Game extends React.Component {
         count: 0,
         building: [...this.state.building.slice(1), newBuilding]
       });
+      this.componentAddEventListener();
     }.bind(this)).catch(function() {
       console.log("catch");
     });
   }
 
   ladderFall(count) {
-    const objThis  = this;
-    for (var i = 1; i <= 91; i++) {
-      (function(index) {
-        setTimeout(function() {
-          if (index == 91) {
-            this.buildingHorizontalMove();
-            this.setState({ horizontalMove: true });
-          } else {
-            this.setState({ angle: index, flowing: true });
-          }
-        }.bind(objThis), index * 10);
-      })(i);
-    }
+    
   }
 
   createLadder() {
@@ -127,14 +115,33 @@ export default class Game extends React.Component {
   }
   
   onMouseDown() {
+
     this.setState({ count: 0, flowing: false, horizontalMove: false });
     this.intervalId = setInterval(this.createLadder.bind(this), 10);
   }
 
   onMouseUp() {
     clearInterval(this.intervalId);
+
     let counts = this.state.count;
-    this.ladderFall(counts);
+    const objThis  = this;
+    for (var i = 1; i <= 91; i++) {
+      (function(index) {
+        setTimeout(function() {
+          if (index == 91) {
+            this.buildingHorizontalMove();
+            this.setState({ horizontalMove: true });
+          } else {
+            console.log("ladderFall")
+            this.setState({ angle: index, flowing: true });
+          }
+        }.bind(objThis), index * 10);
+      })(i);
+    }
+    let el = document.querySelector(".mainDiv");
+    el.removeEventListener("mousedown", this.onMouseDown);
+    el.removeEventListener("mouseup", this.onMouseUp);
+    // this.debounceOnmouseDown = _.debounce(this.debounceOnmouseDown, 1000);
   }
 
   render() {
@@ -146,7 +153,7 @@ export default class Game extends React.Component {
     let xTwo = count * Math.sin(angle * Math.PI / 180);
     let yTwo = count * Math.cos(angle * Math.PI / 180);
     return ( 
-      <div className="mainDiv" onMouseDown={this.onMouseDown} onMouseUp={this.onMouseUp}>
+      <div className="mainDiv">
         <svg width="480" height="350"> 
           <line x1={xLadderPosition} y1={270} x2={xLadderPosition} y2={270-count} stroke="red" visibility={(this.state.flowing === false && this.state.horizontalMove === false) ? 'visible' : 'hidden'}/>
           <line x1={xLadderPosition} y1={270} x2={xLadderPosition+xTwo} y2={270-yTwo} stroke="red" visibility={(this.state.flowing === true && this.state.horizontalMove === false) ? 'visible' : 'hidden'}/>
