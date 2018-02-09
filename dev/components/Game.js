@@ -19,12 +19,14 @@ export default class Game extends React.Component {
       }],
       count: 0,
       angle: 0,
+      statexAxisOne: 80,
       flowing: false,
       horizontalMove: false
     };
     this.onMouseDown = this.onMouseDown.bind(this);
     this.onMouseUp = this.onMouseUp.bind(this);
   }
+
   
   componentAddEventListener() {
     let el =document.querySelector(".mainDiv");
@@ -86,7 +88,8 @@ export default class Game extends React.Component {
         setTimeout(function() {
           resolve({
             newBuildingWidth: Math.floor(Math.random() * 70) + 20,
-            newBuildingxAxis: 480
+            newBuildingxAxis: 480,
+            // check: this.state.building[1].xAxis
           });
         }, (480-buildingThreeState+1) * 5);
       }, this.state.building[1].xAxis * 12);
@@ -97,16 +100,13 @@ export default class Game extends React.Component {
       this.setState({
         horizontalMove: false,
         count: 0,
-        building: [...this.state.building.slice(1), newBuilding]
+        building: [...this.state.building.slice(1), newBuilding],
+        statexAxisOne: this.state.building[2].xAxis
       });
       this.componentAddEventListener();
     }.bind(this)).catch(function() {
       console.log("catch");
     });
-  }
-
-  ladderFall(count) {
-    
   }
 
   createLadder() {
@@ -115,14 +115,13 @@ export default class Game extends React.Component {
   }
   
   onMouseDown() {
-
     this.setState({ count: 0, flowing: false, horizontalMove: false });
     this.intervalId = setInterval(this.createLadder.bind(this), 10);
   }
 
   onMouseUp() {
     clearInterval(this.intervalId);
-
+    let el = document.querySelector(".mainDiv");
     let counts = this.state.count;
     const objThis  = this;
     for (var i = 1; i <= 91; i++) {
@@ -132,13 +131,12 @@ export default class Game extends React.Component {
             this.buildingHorizontalMove();
             this.setState({ horizontalMove: true });
           } else {
-            console.log("ladderFall")
             this.setState({ angle: index, flowing: true });
           }
         }.bind(objThis), index * 10);
       })(i);
     }
-    let el = document.querySelector(".mainDiv");
+    
     el.removeEventListener("mousedown", this.onMouseDown);
     el.removeEventListener("mouseup", this.onMouseUp);
     // this.debounceOnmouseDown = _.debounce(this.debounceOnmouseDown, 1000);
@@ -147,9 +145,13 @@ export default class Game extends React.Component {
   render() {
     let xLadderPosition = this.state.building[0].width;
     let xLadderPositionOnMove = this.state.building[1].xAxis;
-    // console.log(xLadderPositionOnMove - xLadderPosition);
     let count = this.state.count;
     let angle = this.state.angle;
+    let xAxisOne = this.state.statexAxisOne; // final xaxis position & not update with the state change
+    let xCount = 0; 
+    if (xLadderPositionOnMove !== xAxisOne) {
+      xCount = xAxisOne - xLadderPositionOnMove;
+    }
     let xTwo = count * Math.sin(angle * Math.PI / 180);
     let yTwo = count * Math.cos(angle * Math.PI / 180);
     return ( 
@@ -157,7 +159,7 @@ export default class Game extends React.Component {
         <svg width="480" height="350"> 
           <line x1={xLadderPosition} y1={270} x2={xLadderPosition} y2={270-count} stroke="red" visibility={(this.state.flowing === false && this.state.horizontalMove === false) ? 'visible' : 'hidden'}/>
           <line x1={xLadderPosition} y1={270} x2={xLadderPosition+xTwo} y2={270-yTwo} stroke="red" visibility={(this.state.flowing === true && this.state.horizontalMove === false) ? 'visible' : 'hidden'}/>
-          <line x1={xLadderPositionOnMove -xLadderPosition} y1={270} x2={xLadderPositionOnMove-xLadderPosition+xTwo} y2={270-yTwo} stroke="red" visibility={(this.state.flowing === true && this.state.horizontalMove === true) ? 'visible' : 'hidden'}/>
+          <line x1={xLadderPosition - xCount} y1={270} x2={(count+xLadderPosition)-xCount} y2={270-yTwo} stroke="red" visibility={(this.state.flowing === true && this.state.horizontalMove === true) ? 'visible' : 'hidden'}/>
           {this.state.building.map(function(item, index) {
             return (<rect key={index} x={item.xAxis} y="270" width={item.width} height="80" fill="black"/>)
           })}
