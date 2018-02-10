@@ -9,3 +9,12 @@
 	background-color: #f3f3f3;
 	position: fixed;
 }
+.scoreBoard {
+	top: 1%;
+	left: 45%;
+	width:150px;
+	height:50px;
+	border: 1px solid #ccc;
+	background-color: #f3f3f3;
+	position: fixed;
+}

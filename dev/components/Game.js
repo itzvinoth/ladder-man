@@ -1,6 +1,7 @@
 import React from 'react';
 import './Game.css';
 import _ from 'underscore';
+import scoreboard from './scoreboard';
 
 export default class Game extends React.Component {
 
@@ -21,12 +22,12 @@ export default class Game extends React.Component {
       angle: 0,
       statexAxisOne: 80,
       flowing: false,
+      score: 0,
       horizontalMove: false
     };
     this.onMouseDown = this.onMouseDown.bind(this);
     this.onMouseUp = this.onMouseUp.bind(this);
   }
-
   
   componentAddEventListener() {
     let el =document.querySelector(".mainDiv");
@@ -119,24 +120,65 @@ export default class Game extends React.Component {
     this.intervalId = setInterval(this.createLadder.bind(this), 10);
   }
 
-  onMouseUp() {
-    clearInterval(this.intervalId);
-    let el = document.querySelector(".mainDiv");
-    let counts = this.state.count;
-    const objThis  = this;
+  placedCorrect(objThis) {
     for (var i = 1; i <= 91; i++) {
       (function(index) {
         setTimeout(function() {
           if (index == 91) {
             this.buildingHorizontalMove();
-            this.setState({ horizontalMove: true });
+            this.setState({ horizontalMove: true, score: this.state.score + 1 });
           } else {
             this.setState({ angle: index, flowing: true });
           }
         }.bind(objThis), index * 10);
       })(i);
     }
-    
+  }
+
+  placedBefore(objThis) {
+    for (var i = 1; i <= 180; i++) {
+      (function(index) {
+        setTimeout(function() {
+          this.setState({ angle: index, flowing: true });
+        }.bind(objThis), index * 10);
+      })(i);
+    }
+  }
+
+  placedBeyond(objThis) {
+    for (var i = 1; i <= 90; i++) {
+      (function(index) {
+        setTimeout(function() {
+          this.setState({ angle: index, flowing: true });
+        }.bind(objThis), index * 10);
+      })(i);
+    }
+  }
+
+  ladderFall(status) {
+    if (status == "placedcorrect") {
+      this.placedCorrect(this);
+    } else if (status == "placedbefore") {
+      this.placedBefore(this);
+    } else if (status == "placedbeyond") {
+      this.placedBeyond(this);
+    }
+  }
+
+  onMouseUp() {
+    clearInterval(this.intervalId);
+    let el = document.querySelector(".mainDiv");
+    let ladderLength = this.state.count;
+    let buildingTwoxAxis = this.state.building[1].xAxis;
+    let buildingOneWidth = this.state.building[0].width;
+    let buildingTwoWidth = this.state.building[1].width;
+    if ((ladderLength + buildingOneWidth) > buildingTwoxAxis && (ladderLength + buildingOneWidth) < (buildingTwoxAxis + buildingTwoWidth)) {
+      this.ladderFall("placedcorrect");
+    } else if ((ladderLength + buildingOneWidth) < buildingTwoxAxis) {
+      this.ladderFall("placedbefore");
+    } else if ((ladderLength + buildingOneWidth) > (buildingTwoxAxis + buildingTwoWidth)) {
+      this.ladderFall("placedbeyond");
+    }
     el.removeEventListener("mousedown", this.onMouseDown);
     el.removeEventListener("mouseup", this.onMouseUp);
     // this.debounceOnmouseDown = _.debounce(this.debounceOnmouseDown, 1000);
@@ -154,7 +196,9 @@ export default class Game extends React.Component {
     }
     let xTwo = count * Math.sin(angle * Math.PI / 180);
     let yTwo = count * Math.cos(angle * Math.PI / 180);
+    let score = this.state.score;
     return ( 
+      <div>
       <div className="mainDiv">
         <svg width="480" height="350"> 
           <line x1={xLadderPosition} y1={270} x2={xLadderPosition} y2={270-count} stroke="red" visibility={(this.state.flowing === false && this.state.horizontalMove === false) ? 'visible' : 'hidden'}/>
@@ -165,7 +209,13 @@ export default class Game extends React.Component {
           })}
         </svg>
       </div>
+      <div className="scoreBoard">
+        <div>score: {score}</div>
+      </div>
+      </div>
     )
   }
   
 }
+
+
