@@ -127,6 +127,11 @@ export default class Game extends React.Component {
           if (index == 91) {
             this.buildingHorizontalMove();
             this.setState({ horizontalMove: true, score: this.state.score + 1 });
+            if (localStorage.getItem('highestScore') > this.state.score) {
+              localStorage.setItem('highestScore', localStorage.getItem('highestScore'));
+            } else {
+              localStorage.setItem('highestScore', this.state.score);
+            }
           } else {
             this.setState({ angle: index, flowing: true });
           }
@@ -197,6 +202,12 @@ export default class Game extends React.Component {
     let xTwo = count * Math.sin(angle * Math.PI / 180);
     let yTwo = count * Math.cos(angle * Math.PI / 180);
     let score = this.state.score;
+    let highestScore;
+    if (localStorage.getItem('highestScore') > this.state.score) {
+      highestScore = localStorage.getItem('highestScore');
+    } else {
+      highestScore = this.state.score;
+    }
     return ( 
       <div>
       <div className="mainDiv">
@@ -210,6 +221,7 @@ export default class Game extends React.Component {
         </svg>
       </div>
       <div className="scoreBoard">
+        <div>High Score: {highestScore}</div>
         <div>score: {score}</div>
       </div>
       </div>
@@ -217,5 +229,4 @@ export default class Game extends React.Component {
   }
   
 }
-
 
